@@ -1,8 +1,21 @@
+/* Dev:  @hjestrada
+Tecnoparque nodo Pitalito
+
+
+*/
+
+
+
 
 #include <Wire.h>
 #include <LiquidCrystal_I2C.h>
 
 LiquidCrystal_I2C lcd(0x27, 16, 2); // set the LCD address to 0x27 for a 16 chars and 2 line display
+
+const int pinBuzzer = 14;
+int duration = 12;
+
+
 
 
 /* declaración de variables */
@@ -40,7 +53,7 @@ void setup() {
   lcd.setCursor(2, 1);
   lcd.print("Nodo Pitalito");
   lcd.init();
-  melodia();
+
 
   lcd.backlight();
   lcd.setCursor(4, 0);
@@ -53,7 +66,7 @@ void setup() {
   lcd.init();
 
 
-
+  //melodia();
 
 }
 void loop() {
@@ -73,21 +86,21 @@ void loop() {
 
 void ledPrueba() {
   digitalWrite(pinA, HIGH);   // turn the LED on (HIGH is the voltage level)
-  delay(200);                       // wait for a second
+  delay(1000);                       // wait for a second
   digitalWrite(pinA, LOW);    // turn the LED off by making the voltage LOW
-  delay(200);
+  delay(1000);
   digitalWrite(pinB, HIGH);   // turn the LED on (HIGH is the voltage level)
-  delay(200);                       // wait for a second
+  delay(1000);                       // wait for a second
   digitalWrite(pinB, LOW);    // turn the LED off by making the voltage LOW
-  delay(200);
+  delay(1000);
   digitalWrite(pinC, HIGH);   // turn the LED on (HIGH is the voltage level)
-  delay(200);                       // wait for a second
+  delay(1000);                       // wait for a second
   digitalWrite(pinC, LOW);    // turn the LED off by making the voltage LOW
-  delay(200);
+  delay(1000);
   digitalWrite(pinD, HIGH);   // turn the LED on (HIGH is the voltage level)
-  delay(200);                       // wait for a second
+  delay(1000);                       // wait for a second
   digitalWrite(pinD, LOW);    // turn the LED off by making the voltage LOW
-  delay(200);
+  delay(1000);
 
 }
 
