@@ -1,0 +1,20 @@
+G04 PROTEUS GERBER X2 FILE*
+%TF.GenerationSoftware,Labcenter,Proteus,8.11-SP0-Build30052*%
+%TF.CreationDate,2022-02-17T19:40:43+00:00*%
+%TF.FileFunction,Paste,Top*%
+%TF.FilePolarity,Positive*%
+%TF.Part,Single*%
+%TF.SameCoordinates,{fa563668-36b4-49a2-8e21-0a91219477cd}*%
+%FSLAX45Y45*%
+%MOMM*%
+G01*
+%TA.AperFunction,Profile*%
+%ADD20C,0.203200*%
+%TD.AperFunction*%
+D20*
+X-11500000Y-9450000D02*
+X+1500000Y-9450000D01*
+X+1500000Y+11050000D01*
+X-11500000Y+11050000D01*
+X-11500000Y-9450000D01*
+M02*

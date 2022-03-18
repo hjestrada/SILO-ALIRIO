@@ -1,0 +1,109 @@
+LABCENTER PROTEUS TOOL INFORMATION FILE
+=======================================
+
+In case of difficulty, please e-mail support@labcenter.co.uk
+
+Tool set up for Proteus layout 'SILO_ALIRIO_PAPAMIJA.pdsprj'.
+CADCAM generated at 2:40:50 p. m. on jueves, 17 de febrero de 2022.
+
+File List
+---------
+Top Copper              : SILO_ALIRIO_PAPAMIJA - CADCAM Top Copper.GBR
+Inner  1                : SILO_ALIRIO_PAPAMIJA - CADCAM Inner  1.GBR
+Inner  2                : SILO_ALIRIO_PAPAMIJA - CADCAM Inner  2.GBR
+Inner  3                : SILO_ALIRIO_PAPAMIJA - CADCAM Inner  3.GBR
+Inner  4                : SILO_ALIRIO_PAPAMIJA - CADCAM Inner  4.GBR
+Inner  5                : SILO_ALIRIO_PAPAMIJA - CADCAM Inner  5.GBR
+Inner  6                : SILO_ALIRIO_PAPAMIJA - CADCAM Inner  6.GBR
+Inner  7                : SILO_ALIRIO_PAPAMIJA - CADCAM Inner  7.GBR
+Inner  8                : SILO_ALIRIO_PAPAMIJA - CADCAM Inner  8.GBR
+Inner  9                : SILO_ALIRIO_PAPAMIJA - CADCAM Inner  9.GBR
+Inner 10                : SILO_ALIRIO_PAPAMIJA - CADCAM Inner 10.GBR
+Inner 11                : SILO_ALIRIO_PAPAMIJA - CADCAM Inner 11.GBR
+Inner 12                : SILO_ALIRIO_PAPAMIJA - CADCAM Inner 12.GBR
+Inner 13                : SILO_ALIRIO_PAPAMIJA - CADCAM Inner 13.GBR
+Inner 14                : SILO_ALIRIO_PAPAMIJA - CADCAM Inner 14.GBR
+Bottom Copper           : SILO_ALIRIO_PAPAMIJA - CADCAM Bottom Copper.GBR
+Top Silk Screen         : SILO_ALIRIO_PAPAMIJA - CADCAM Top Silk Screen.GBR
+Bottom Silk Screen      : SILO_ALIRIO_PAPAMIJA - CADCAM Bottom Silk Screen.GBR
+Top Solder Resist       : SILO_ALIRIO_PAPAMIJA - CADCAM Top Solder Resist.GBR
+Bottom Solder Resist    : SILO_ALIRIO_PAPAMIJA - CADCAM Bottom Solder Resist.GBR
+Top SMT Paste           : SILO_ALIRIO_PAPAMIJA - CADCAM Top SMT Paste.GBR
+Bottom SMT Paste        : SILO_ALIRIO_PAPAMIJA - CADCAM Bottom SMT Paste.GBR
+Mechanical 1            : SILO_ALIRIO_PAPAMIJA - CADCAM Mechanical 1.GBR
+Mechanical 2            : SILO_ALIRIO_PAPAMIJA - CADCAM Mechanical 2.GBR
+Mechanical 3            : SILO_ALIRIO_PAPAMIJA - CADCAM Mechanical 3.GBR
+Mechanical 4            : SILO_ALIRIO_PAPAMIJA - CADCAM Mechanical 4.GBR
+Top Assembly            : SILO_ALIRIO_PAPAMIJA - CADCAM Top Assembly.GBR
+Bottom Assembly         : SILO_ALIRIO_PAPAMIJA - CADCAM Bottom Assembly.GBR
+Drill, Plated, 1-16     : SILO_ALIRIO_PAPAMIJA - CADCAM Drill TOP-BOT Plated.GBR
+Netlist                 : SILO_ALIRIO_PAPAMIJA - CADCAM Netlist.IPC
+
+Photoplotter Setup
+------------------
+Format: X2, ASCII, 4.3, metric, absolute, eob=*, LZO
+Bounds: -115mm -94.5mm 15mm 110.5mm
+Notes:  D=Diameter, S=Side, W=Width, H=Height, C=Chamfer, I=Index
+
+D10	CIRCLE  D=0.762mm                                                         DRAW  NonConductor
+D11	CIRCLE  D=0.635mm                                                         DRAW  Conductor
+D12	CIRCLE  D=0.762mm                                                         DRAW  Conductor
+D13	SQUARE  S=2.032mm                                                         FLASH ComponentPad
+D14	CIRCLE  D=4.572mm                                                         FLASH ComponentPad
+D15	CIRCLE  D=3.048mm                                                         FLASH ComponentPad
+D16	DIL     W=1.524mm             H=2.54mm              C=0.305mm             FLASH ComponentPad
+D17	CIRCLE  D=2.54mm                                                          FLASH ComponentPad
+D18	CIRCLE  D=2.032mm                                                         FLASH ComponentPad
+D19	CIRCLE  D=5mm                                                             FLASH OtherPad,Unknown
+D70	CIRCLE  D=1.524mm                                                         FLASH ComponentPad
+D71	CIRCLE  D=1.778mm                                                         FLASH ComponentPad
+D20	CIRCLE  D=0.203mm                                                         DRAW  Profile
+D21	CIRCLE  D=0.635mm                                                         DRAW  NonConductor
+D22	CIRCLE  D=0.032mm                                                         DRAW  NonConductor
+D23	CIRCLE  D=0.203mm                                                         DRAW  NonConductor
+D24	CIRCLE  D=0.203mm                                                         DRAW  Material
+D25	CIRCLE  D=0.032mm                                                         DRAW  Material
+D26	CIRCLE  D=0.032mm                                                         DRAW  NonMaterial
+D27	PPAD    W=2.286mm             H=2.286mm             I=0                   FLASH Material
+D28	CIRCLE  D=5.08mm                                                          FLASH Material
+D29	CIRCLE  D=3.302mm                                                         FLASH Material
+D72	PPAD    W=1.778mm             H=2.794mm             I=1                   FLASH Material
+D73	CIRCLE  D=2.794mm                                                         FLASH Material
+D30	CIRCLE  D=2.286mm                                                         FLASH Material
+D31	CIRCLE  D=5.254mm                                                         FLASH Material
+D32	CIRCLE  D=1.778mm                                                         FLASH Material
+D33	CIRCLE  D=2.032mm                                                         FLASH Material
+D34	CIRCLE  D=0.813mm                                                         DRAW  Material
+D35	CIRCLE  D=1.829mm                                                         DRAW  Material
+D36	CIRCLE  D=0.583mm                                                         DRAW  Material
+D37	CIRCLE  D=1.219mm                                                         DRAW  Material
+D38	CIRCLE  D=0.23mm                                                          DRAW  Material
+D39	CIRCLE  D=1.016mm                                                         DRAW  Material
+D40	CIRCLE  D=0.267mm                                                         DRAW  Material
+D41	CIRCLE  D=0.063mm                                                         DRAW  Material
+D42	CIRCLE  D=0.156mm                                                         DRAW  Material
+D43	CIRCLE  D=0.159mm                                                         DRAW  Material
+D44	CIRCLE  D=0.192mm                                                         DRAW  Material
+D45	CIRCLE  D=0.61mm                                                          DRAW  Material
+D46	CIRCLE  D=0.084mm                                                         DRAW  Material
+D47	CIRCLE  D=0.711mm                                                         DRAW  Material
+D48	CIRCLE  D=0.11mm                                                          DRAW  Material
+D49	CIRCLE  D=0.134mm                                                         DRAW  Material
+D50	CIRCLE  D=1.016mm                                                         FLASH ComponentDrill
+D51	CIRCLE  D=3mm                                                             FLASH ComponentDrill
+D52	CIRCLE  D=1.524mm                                                         FLASH ComponentDrill
+D53	CIRCLE  D=1mm                                                             FLASH ComponentDrill
+D54	CIRCLE  D=1.143mm                                                         FLASH ComponentDrill
+D55	CIRCLE  D=0.762mm                                                         FLASH ComponentDrill
+D56	CIRCLE  D=3mm                                                             FLASH OtherDrill,Unknown
+
+Layer Stackup
+-------------
+Top Solder Resist        : 0.01mm     Resist
+Top Copper               : 0.035mm    Copper
+Core                     : 1.55mm     FR4
+Bottom Copper            : 0.035mm    Copper
+Bottom Solder Resist     : 0.01mm     Resist
+
+
+[END OF FILE]
