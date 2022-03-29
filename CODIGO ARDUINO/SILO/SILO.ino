@@ -1,20 +1,28 @@
 /* Dev:  @hjestrada
-Tecnoparque nodo Pitalito
-
-
+  Tecnoparque nodo Pitalito
 */
 
 
 
-
+#include <SHT1x.h>
 #include <Wire.h>
 #include <LiquidCrystal_I2C.h>
+#include <virtuabotixRTC.h> //Libreria
 
 LiquidCrystal_I2C lcd(0x27, 16, 2); // set the LCD address to 0x27 for a 16 chars and 2 line display
 
-const int pinBuzzer = 14;
+// Pines sensores  SHT10
+
+#define dataPin  17
+#define clockPin 16
+#define dataPin2  15
+#define clockPin2 14
+
+
 int duration = 12;
 
+SHT1x sht1x(dataPin, clockPin);
+SHT1x sht1x2(dataPin2, clockPin2);
 
 
 
@@ -39,8 +47,11 @@ const int pinA = 11;
 const int pinB = 8;
 const int pinC = 10;
 const int pinD = 9;
-
+virtuabotixRTC myRTC(2, 3, 4); // Si cambiamos los PIN de conexión, debemos cambiar aquí tambien
 void setup() {
+
+  //myRTC.setDS1302Time(00, 11, 11, 1, 28, 3, 2022); // SS, MM, HH, DW, DD, MM, YYYY
+ 
   pinMode(pinA, OUTPUT);
   pinMode(pinB, OUTPUT);
   pinMode(pinC, OUTPUT);
@@ -53,8 +64,6 @@ void setup() {
   lcd.setCursor(2, 1);
   lcd.print("Nodo Pitalito");
   lcd.init();
-
-
   lcd.backlight();
   lcd.setCursor(4, 0);
   lcd.print("Taller");
@@ -64,22 +73,23 @@ void setup() {
   lcd.setCursor(3, 0);
   lcd.print("El Cafetero");
   lcd.init();
-
-
   //melodia();
 
 }
 void loop() {
-  //mensajeAlerta();
 
-  ledPrueba();
+  myRTC.updateTime();
+
+  // ledPrueba();
   Pantalla1();
-  delay(1000);
-  Pantalla2();
-  delay(1000);
-  Pantalla3();
-  delay(1000);
-  Pantalla4();
+  //delay(1000);
+  //  Pantalla2();
+  //  delay(1000);
+  //  Pantalla3();
+  //  delay(1000);
+  //  Pantalla4();
+  //  delay(1000);
+  //  fechahora();
 
 }
 
@@ -103,10 +113,6 @@ void ledPrueba() {
   delay(1000);
 
 }
-
-
-
-
 
 
 void nota(int frec, int t)
@@ -136,29 +142,61 @@ void mensajeAlerta() {
   lcd.scrollDisplayLeft();
   delay(1000);
 }
+void fechahora() {
+
+  lcd.init();
+  lcd.backlight();
+  lcd.setCursor(4, 0);
+  lcd.print(myRTC.dayofmonth); // Se puede cambiar entre día y mes si se utiliza el sistema Americano
+  lcd.print("/");
+  lcd.print(myRTC.month);
+  lcd.print("/");
+  lcd.print(myRTC.year);
+  lcd.print(" ");
+  lcd.setCursor(6, 1);
+  lcd.print(myRTC.hours);
+  lcd.print(":");
+  lcd.print(myRTC.minutes);
+  //lcd.print(":");
+  //lcd.println(myRTC.seconds);
+
+
+}
+
 
 void Pantalla1() {
+
+  int temp_c;
+  int humidity;
+  int temp_c2;
+  int humidity2;
+
+  temp_c = sht1x.readTemperatureC();
+  humidity = sht1x.readHumidity();
+  temp_c2 = sht1x2.readTemperatureC();
+  humidity2 = sht1x2.readHumidity();
+
   lcd.init();
   lcd.backlight();
   lcd.setCursor(0, 0);
   lcd.print("TP1:");
   lcd.setCursor(4, 0);
-  lcd.print("30");
+  lcd.print(temp_c);
   lcd.setCursor(7, 0);
   lcd.print("TP2:");
   lcd.setCursor(11, 0);
-  lcd.print("30");
+  lcd.print(temp_c2);
   lcd.setCursor(14, 0);
   lcd.print("*C");
 
   lcd.setCursor(0, 1);
   lcd.print("HP1:");
   lcd.setCursor(4, 1);
-  lcd.print("30");
+  lcd.print(humidity);
   lcd.setCursor(7, 1);
   lcd.print("HP2:");
   lcd.setCursor(11, 1);
-  lcd.print("30");
+  lcd.print(humidity2);
   lcd.setCursor(14, 1);
   lcd.print("HR");
 
