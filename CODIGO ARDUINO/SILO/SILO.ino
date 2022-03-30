@@ -18,8 +18,13 @@ LiquidCrystal_I2C lcd(0x27, 16, 2); // set the LCD address to 0x27 for a 16 char
 #define dataPin2  15
 #define clockPin2 14
 
+#define RPWM 38
+#define LPWM 36
+#define REN 34
+#define LEN 32
 
 int duration = 12;
+virtuabotixRTC myRTC(2, 3, 4); // Si cambiamos los PIN de conexión, debemos cambiar aquí tambien
 
 SHT1x sht1x(dataPin, clockPin);
 SHT1x sht1x2(dataPin2, clockPin2);
@@ -47,15 +52,25 @@ const int pinA = 11;
 const int pinB = 8;
 const int pinC = 10;
 const int pinD = 9;
-virtuabotixRTC myRTC(2, 3, 4); // Si cambiamos los PIN de conexión, debemos cambiar aquí tambien
-void setup() {
 
+
+void setup() {
   //myRTC.setDS1302Time(00, 11, 11, 1, 28, 3, 2022); // SS, MM, HH, DW, DD, MM, YYYY
- 
+
+
+  //-pines Led
   pinMode(pinA, OUTPUT);
   pinMode(pinB, OUTPUT);
   pinMode(pinC, OUTPUT);
   pinMode(pinD, OUTPUT);
+
+  //-Pines motores
+  pinMode(RPWM, OUTPUT);
+  pinMode(LPWM, OUTPUT);
+  pinMode(LEN, OUTPUT);
+  pinMode(REN, OUTPUT);
+  digitalWrite(REN, HIGH);
+  digitalWrite(LEN, HIGH);
 
   lcd.init();
   lcd.backlight();
@@ -80,8 +95,9 @@ void loop() {
 
   myRTC.updateTime();
 
-  // ledPrueba();
+  ledPrueba();
   Pantalla1();
+  
   //delay(1000);
   //  Pantalla2();
   //  delay(1000);
@@ -96,21 +112,21 @@ void loop() {
 
 void ledPrueba() {
   digitalWrite(pinA, HIGH);   // turn the LED on (HIGH is the voltage level)
-  delay(1000);                       // wait for a second
+  delay(500);                       // wait for a second
   digitalWrite(pinA, LOW);    // turn the LED off by making the voltage LOW
-  delay(1000);
+  delay(500);
   digitalWrite(pinB, HIGH);   // turn the LED on (HIGH is the voltage level)
-  delay(1000);                       // wait for a second
+  delay(500);                       // wait for a second
   digitalWrite(pinB, LOW);    // turn the LED off by making the voltage LOW
-  delay(1000);
+  delay(500);
   digitalWrite(pinC, HIGH);   // turn the LED on (HIGH is the voltage level)
-  delay(1000);                       // wait for a second
+  delay(500);                       // wait for a second
   digitalWrite(pinC, LOW);    // turn the LED off by making the voltage LOW
-  delay(1000);
+  delay(500);
   digitalWrite(pinD, HIGH);   // turn the LED on (HIGH is the voltage level)
-  delay(1000);                       // wait for a second
+  delay(500);                       // wait for a second
   digitalWrite(pinD, LOW);    // turn the LED off by making the voltage LOW
-  delay(1000);
+  delay(500);
 
 }
 
@@ -238,4 +254,26 @@ void Pantalla4() {
   lcd.print("Temp:(");
   lcd.setCursor(9, 1);
   lcd.print(") *C");
+}
+
+void pruebaMotores() {
+
+  analogWrite(RPWM, 255);
+  analogWrite(LPWM, 0);
+  delay(10000);
+
+  analogWrite(LPWM, 255);
+  analogWrite(RPWM, 0);
+  delay(10000);
+}
+
+void paroMotores() {
+
+  analogWrite(RPWM, 0);
+  analogWrite(LPWM, 0);
+  delay(10000);
+
+  analogWrite(LPWM, 0);
+  analogWrite(RPWM, 0);
+  delay(10000);
 }
