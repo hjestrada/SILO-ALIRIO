@@ -11,6 +11,8 @@
 #include <Wire.h>
 #include <LiquidCrystal_I2C.h>
 #include <virtuabotixRTC.h>  //Libreria
+#include <EEPROM.h>
+
 LiquidCrystal_I2C lcd(0x27, 16, 2);
 
 // Pines sensores  SHT10
@@ -117,8 +119,18 @@ void setup() {
 }
 
 void loop() {
-
+byte value2,value3;
   selectOption();
+
+ value2 = EEPROM.read(0);
+ value3 = EEPROM.read(1);
+
+  Serial.print(value2, DEC);
+    Serial.print("|");
+      Serial.print(value3, DEC);
+  Serial.println();
+
+
 
   //menu 1
   if (level_menu == 0) {
@@ -161,8 +173,7 @@ void loop() {
 
       if (counter == 3) {
         counter = 0;
-        //counter = brilloled3;
-        //-------------
+        
         int Posicion = 0;
         int PinCLKanterior = LOW;
         int n = LOW;
@@ -186,8 +197,7 @@ void loop() {
         lcd.clear();
         lcd.setCursor(0, 0);
         lcd.print("T-Apertura 1");
-        lcd.setCursor(0, 1);
-        lcd.print(Posicion);
+     
         level_menu = 6;
       }
 
@@ -198,9 +208,8 @@ void loop() {
         lcd.clear();
         lcd.setCursor(0, 0);
         lcd.print("T-Apertura 2");
-        lcd.setCursor(0, 1);
-        lcd.print(brilloled3);
-        level_menu = 6;
+        
+        level_menu = 7;
       }
 
       //setpoint temp
@@ -335,25 +344,52 @@ void loop() {
     }
   }
 
-  //----------------------------------------
+  //-------------- contador tiempo puerta 1--------------------------
 
 
   if (level_menu == 6) {
     if (fn_encoder(100)) {
       brilloled3 = counter;
-      fn_intensidad();
+      lcd.setCursor(0, 1);
+      lcd.print(brilloled3);
+
     }
 
     if (btnpress) {
       counter = 5;
       level_menu = 0;
+       EEPROM.write(0, brilloled3);
       fn_menu(counter, menu1, sizemenu1);
       btnpress = false;
     }
   }
+
+  //-------------- contador tiempo puerta 2--------------------------
+  if (level_menu == 7) {
+    if (fn_encoder(100)) {
+      brilloled3 = counter;
+      lcd.setCursor(0, 1);
+      lcd.print(brilloled3);
+
+    }
+
+    if (btnpress) {
+      counter = 5;
+      level_menu = 0;
+       EEPROM.write(1, brilloled3);
+      fn_menu(counter, menu1, sizemenu1);
+      btnpress = false;
+    }
+  }
+
+
+//-------------------------------------------
+
+
+
 }
 
-
+//-----------------------------------------------------------------
 
 void fn_menu(int pos, String menus[], byte sizemenu) {
   lcd.clear();
@@ -411,19 +447,11 @@ bool fn_encoder(byte sizemenu) {
 
 
 
-
 void selectOption() {
   if (digitalRead(sw) == LOW) {
     delay(1000);
     btnpress = HIGH;
   }
-}
-
-
-void fn_intensidad() {
- // analogWrite(led3, map(brilloled3, 0, 100, 0, 255));
-  lcd.setCursor(0, 1);
-  lcd.print(brilloled3);
 }
 
 
