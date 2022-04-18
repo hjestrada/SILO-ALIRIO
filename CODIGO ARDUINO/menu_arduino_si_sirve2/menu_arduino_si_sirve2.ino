@@ -7,7 +7,7 @@
   |---------------------------|
 */
 
-
+//--prueba git
 
 #include <SHT1x.h>
 #include <Wire.h>
