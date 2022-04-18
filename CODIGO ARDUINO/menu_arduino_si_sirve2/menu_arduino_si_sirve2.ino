@@ -67,8 +67,6 @@ String Scount;
 String menu1[] = {"Puerta 1", "Puerta 2", "DashBoard", "Tiempo Ap 1", "Tiempo Ap 2", "Setpoint Temp", "Setpoint Hum"};
 int sizemenu1 = sizeof(menu1) / sizeof(menu1[0]);
 
-
-
 String menu2[] = {"Apertura", "Cierre", "Atras"};
 int sizemenu2 = sizeof(menu2) / sizeof(menu2[0]);
 
