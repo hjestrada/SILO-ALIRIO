@@ -1,13 +1,11 @@
-//--12--
-
 /*
   |---------------------------|
   | Dev:  @hjestrada          |
-  | Tecnoparque nodo Pitalito |
+  | Tecnoparque nodo Pitalito! |
   |---------------------------|
 */
 
-//--prueba git
+
 
 #include <SHT1x.h>
 #include <Wire.h>
