@@ -119,15 +119,21 @@ void setup() {
 }
 
 void loop() {
-byte value2,value3;
+byte value2,value3,value4,value5;
   selectOption();
 
  value2 = EEPROM.read(0);
  value3 = EEPROM.read(1);
-
-  Serial.print(value2, DEC);
+ value4 = EEPROM.read(2);
+ value5 = EEPROM.read(3);
+ 
+   Serial.print(value2, DEC);
     Serial.print("|");
       Serial.print(value3, DEC);
+      Serial.print("|");
+      Serial.print(value4, DEC);
+      Serial.print("|");
+      Serial.print(value5, DEC);
   Serial.println();
 
 
@@ -197,7 +203,7 @@ byte value2,value3;
         lcd.clear();
         lcd.setCursor(0, 0);
         lcd.print("T-Apertura 1");
-     
+        
         level_menu = 6;
       }
 
@@ -208,7 +214,7 @@ byte value2,value3;
         lcd.clear();
         lcd.setCursor(0, 0);
         lcd.print("T-Apertura 2");
-        
+      
         level_menu = 7;
       }
 
@@ -216,23 +222,21 @@ byte value2,value3;
       if (counter == 5) {
 
         counter = brilloled3;
-        level_menu = 6;
+        level_menu = 8;
         lcd.clear();
         lcd.setCursor(0, 0);
         lcd.print("Temperatura *C");
-        lcd.setCursor(0, 1);
-        lcd.print(brilloled3);
+      
       }
 
       //Setpoint HUM
       if (counter == 6) {
         counter = brilloled3;
-        level_menu = 6;  //
+        level_menu = 9;  //
         lcd.clear();
         lcd.setCursor(0, 0);
         lcd.print("Humedad %");
-        lcd.setCursor(0, 1);
-        lcd.print(brilloled3);
+   
       }
 
       btnpress = false;
@@ -348,11 +352,16 @@ byte value2,value3;
 
 
   if (level_menu == 6) {
+    lcd.setCursor(8, 1);
+      lcd.print("SP: ");
+      lcd.print(value2);
     if (fn_encoder(100)) {
       brilloled3 = counter;
       lcd.setCursor(0, 1);
+      lcd.print("                ");
+      lcd.setCursor(0, 1);
       lcd.print(brilloled3);
-
+     
     }
 
     if (btnpress) {
@@ -366,10 +375,16 @@ byte value2,value3;
 
   //-------------- contador tiempo puerta 2--------------------------
   if (level_menu == 7) {
+     lcd.setCursor(8, 1);
+      lcd.print("SP: ");
+      lcd.print(value3);
     if (fn_encoder(100)) {
       brilloled3 = counter;
       lcd.setCursor(0, 1);
+      lcd.print("                ");
+      lcd.setCursor(0, 1);
       lcd.print(brilloled3);
+     
 
     }
 
@@ -381,10 +396,50 @@ byte value2,value3;
       btnpress = false;
     }
   }
+//-------------contador HUmedad------------------------
+  if (level_menu == 9) {
+     lcd.setCursor(8, 1);
+      lcd.print("SP: ");
+      lcd.print(value4);
+    if (fn_encoder(100)) {
+      brilloled3 = counter;
+     lcd.setCursor(0, 1);
+      lcd.print("                ");
+      lcd.setCursor(0, 1);
+      lcd.print(brilloled3);
 
+    }
 
-//-------------------------------------------
+    if (btnpress) {
+      counter = 5;
+      level_menu = 0;
+       EEPROM.write(2, brilloled3);
+      fn_menu(counter, menu1, sizemenu1);
+      btnpress = false;
+    }
+  }
+//----------------contador temp---------------------------
+  if (level_menu == 8) {
+     lcd.setCursor(8, 1);
+      lcd.print("SP: ");
+      lcd.print(value5);
+    if (fn_encoder(100)) {
+      brilloled3 = counter;
+          lcd.setCursor(0, 1);
+      lcd.print("                ");
+      lcd.setCursor(0, 1);
+      lcd.print(brilloled3);
 
+    }
+
+    if (btnpress) {
+      counter = 5;
+      level_menu = 0;
+       EEPROM.write(3, brilloled3);
+      fn_menu(counter, menu1, sizemenu1);
+      btnpress = false;
+    }
+  }
 
 
 }
