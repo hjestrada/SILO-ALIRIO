@@ -40,6 +40,14 @@ SHT1x sht1x2(dataPin2, clockPin2);
 #define REN2 45
 #define LEN2 47
 
+//::...::::::::::::::::::
+
+virtuabotixRTC myRTC(2, 3, 4); // Si cambiamos los PIN de conexión, debemos cambiar aquí tambien
+
+
+
+
+
 
 //:::::::::::ENCODER::::::::::::::::::::::::::
 
@@ -82,7 +90,20 @@ bool btnpress = false;
 byte brilloled3 = 0;
 byte flecha[] = { B00000, B00100, B00110, B11111, B00110, B00100, B00000, B00000 };
 
+//----Variables para Fecha-----------
+int secondsSet = 0;
+int minutesSet = 0;
+int hoursSet = 0;
+int monthSet = 0;
+int dayMonthSet = 0;
+int dayWeekSet = 0;
+int yearSet = 0;
+//-----------------------------------
+
 void setup() {
+myRTC.updateTime();
+   //myRTC.setDS1302Time(00, 11, 11, 1, 28, 3, 2022); // SS, MM, HH, DW, DD, MM, YYYY
+  
   Serial.begin(9600);
   pinMode(outputA, INPUT);
   pinMode(outputB, INPUT);
@@ -119,27 +140,38 @@ void setup() {
 }
 
 void loop() {
-byte value2,value3,value4,value5;
+
+  byte SP_tiempopuerta1, SP_tiempopuerta2, SP_humedad, SP_temp;
   selectOption();
 
- value2 = EEPROM.read(0);
- value3 = EEPROM.read(1);
- value4 = EEPROM.read(2);
- value5 = EEPROM.read(3);
- 
-   Serial.print(value2, DEC);
-    Serial.print("|");
-      Serial.print(value3, DEC);
-      Serial.print("|");
-      Serial.print(value4, DEC);
-      Serial.print("|");
-      Serial.print(value5, DEC);
+ SP_tiempopuerta1 = EEPROM.read(0);
+  SP_tiempopuerta2= EEPROM.read(1);
+  SP_humedad = EEPROM.read(2);
+  SP_temp = EEPROM.read(3);
+
+  Serial.print(SP_tiempopuerta1, DEC);
+  Serial.print("|");
+  Serial.print(SP_tiempopuerta2, DEC);
+  Serial.print("|");
+  Serial.print(SP_humedad, DEC);
+  Serial.print("|");
+  Serial.print(SP_temp, DEC);
   Serial.println();
+
+  dayMonthSet = myRTC.dayofmonth;
+  monthSet = myRTC.month;
+  secondsSet = myRTC.seconds;
+  minutesSet = myRTC.minutes;
+  hoursSet = myRTC.hours;
+  dayWeekSet = myRTC.dayofweek;
+  yearSet = myRTC.year;
+
+
 
 
 
   //menu 1
-  if (level_menu == 0) {
+ if (level_menu == 0) {
 
     if (fn_encoder(sizemenu1)) {
       fn_menu(counter, menu1, sizemenu1);
@@ -179,7 +211,7 @@ byte value2,value3,value4,value5;
 
       if (counter == 3) {
         counter = 0;
-        
+
         int Posicion = 0;
         int PinCLKanterior = LOW;
         int n = LOW;
@@ -191,9 +223,7 @@ byte value2,value3,value4,value5;
             Posicion--;
           } else {
             Posicion++;
-
           }
-
         }
         PinCLKanterior = n;
         if ((digitalRead(sw) == LOW)) {
@@ -203,7 +233,7 @@ byte value2,value3,value4,value5;
         lcd.clear();
         lcd.setCursor(0, 0);
         lcd.print("T-Apertura 1");
-        
+
         level_menu = 6;
       }
 
@@ -214,7 +244,7 @@ byte value2,value3,value4,value5;
         lcd.clear();
         lcd.setCursor(0, 0);
         lcd.print("T-Apertura 2");
-      
+
         level_menu = 7;
       }
 
@@ -226,7 +256,6 @@ byte value2,value3,value4,value5;
         lcd.clear();
         lcd.setCursor(0, 0);
         lcd.print("Temperatura *C");
-      
       }
 
       //Setpoint HUM
@@ -236,7 +265,6 @@ byte value2,value3,value4,value5;
         lcd.clear();
         lcd.setCursor(0, 0);
         lcd.print("Humedad %");
-   
       }
 
       btnpress = false;
@@ -283,10 +311,6 @@ byte value2,value3,value4,value5;
 
 
   //---------------------------------------------
-
-
-
-
 
   if (level_menu == 2) {
 
@@ -353,21 +377,20 @@ byte value2,value3,value4,value5;
 
   if (level_menu == 6) {
     lcd.setCursor(8, 1);
-      lcd.print("SP: ");
-      lcd.print(value2);
+    lcd.print("SP: ");
+    lcd.print(SP_tiempopuerta1);
     if (fn_encoder(100)) {
       brilloled3 = counter;
       lcd.setCursor(0, 1);
       lcd.print("                ");
       lcd.setCursor(0, 1);
       lcd.print(brilloled3);
-     
     }
 
     if (btnpress) {
       counter = 5;
       level_menu = 0;
-       EEPROM.write(0, brilloled3);
+      EEPROM.write(0, brilloled3);
       fn_menu(counter, menu1, sizemenu1);
       btnpress = false;
     }
@@ -375,73 +398,67 @@ byte value2,value3,value4,value5;
 
   //-------------- contador tiempo puerta 2--------------------------
   if (level_menu == 7) {
-     lcd.setCursor(8, 1);
-      lcd.print("SP: ");
-      lcd.print(value3);
+    lcd.setCursor(8, 1);
+    lcd.print("SP: ");
+    lcd.print(SP_tiempopuerta2);
     if (fn_encoder(100)) {
       brilloled3 = counter;
       lcd.setCursor(0, 1);
       lcd.print("                ");
       lcd.setCursor(0, 1);
       lcd.print(brilloled3);
-     
-
     }
 
     if (btnpress) {
       counter = 5;
       level_menu = 0;
-       EEPROM.write(1, brilloled3);
+      EEPROM.write(1, brilloled3);
       fn_menu(counter, menu1, sizemenu1);
       btnpress = false;
     }
   }
-//-------------contador HUmedad------------------------
+  //-------------contador HUmedad------------------------
   if (level_menu == 9) {
-     lcd.setCursor(8, 1);
-      lcd.print("SP: ");
-      lcd.print(value4);
+    lcd.setCursor(8, 1);
+    lcd.print("SP: ");
+    lcd.print(SP_humedad);
     if (fn_encoder(100)) {
       brilloled3 = counter;
-     lcd.setCursor(0, 1);
+      lcd.setCursor(0, 1);
       lcd.print("                ");
       lcd.setCursor(0, 1);
       lcd.print(brilloled3);
-
     }
 
     if (btnpress) {
       counter = 5;
       level_menu = 0;
-       EEPROM.write(2, brilloled3);
+      EEPROM.write(2, brilloled3);
       fn_menu(counter, menu1, sizemenu1);
       btnpress = false;
     }
   }
-//----------------contador temp---------------------------
+  //----------------contador temp---------------------------
   if (level_menu == 8) {
-     lcd.setCursor(8, 1);
-      lcd.print("SP: ");
-      lcd.print(value5);
+    lcd.setCursor(8, 1);
+    lcd.print("SP: ");
+    lcd.print(SP_temp);
     if (fn_encoder(100)) {
       brilloled3 = counter;
-          lcd.setCursor(0, 1);
+      lcd.setCursor(0, 1);
       lcd.print("                ");
       lcd.setCursor(0, 1);
       lcd.print(brilloled3);
-
     }
 
     if (btnpress) {
       counter = 5;
       level_menu = 0;
-       EEPROM.write(3, brilloled3);
+      EEPROM.write(3, brilloled3);
       fn_menu(counter, menu1, sizemenu1);
       btnpress = false;
     }
   }
-
-
 }
 
 //-----------------------------------------------------------------
@@ -528,6 +545,14 @@ void fn_credits() {
   lcd.setCursor(3, 0);
   lcd.print("El Cafetero");
   lcd.init();
+}
+
+void rutinaUno(){
+/*
+apertura por tiempo
+*/
+
+
 }
 
 
