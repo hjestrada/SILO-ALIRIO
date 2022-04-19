@@ -1,11 +1,10 @@
 /*
-  |---------------------------|
-  | Dev:  @hjestrada 5          |
-  | Tecnoparque nodo Pitalito! |
-  |---------------------------|
+  |:::::::::::::::::::::::::::::::::::::::::::::::::::::::::|
+  |:::::::::::: Dev:  @hjestrada :::::::::::::::::::::::::::|  
+  |::::::::: Tecnoparque nodo Pitalito::::::::::::::::::::::|
+  |:::::::::::::::::::::::::::::::::::::::::::::::::::::::::|
+  
 */
-
-
 
 #include <SHT1x.h>
 #include <Wire.h>
@@ -25,8 +24,6 @@ LiquidCrystal_I2C lcd(0x27, 16, 2);
 SHT1x sht1x(dataPin, clockPin);
 SHT1x sht1x2(dataPin2, clockPin2);
 
-
-
 //----pines puente h
 
 #define RPWM 38
@@ -40,14 +37,19 @@ SHT1x sht1x2(dataPin2, clockPin2);
 #define REN2 45
 #define LEN2 47
 
-//::...::::::::::::::::::
+//::::::::::::::::::
 
 virtuabotixRTC myRTC(2, 3, 4); // Si cambiamos los PIN de conexión, debemos cambiar aquí tambien
 
-
-
-
-
+//----Variables para Fecha-----------
+int secondsSet = 0;
+int minutesSet = 0;
+int hoursSet = 0;
+int monthSet = 0;
+int dayMonthSet = 0;
+int dayWeekSet = 0;
+int yearSet = 0;
+//-----------------------------------
 
 //:::::::::::ENCODER::::::::::::::::::::::::::
 
@@ -90,20 +92,12 @@ bool btnpress = false;
 byte brilloled3 = 0;
 byte flecha[] = { B00000, B00100, B00110, B11111, B00110, B00100, B00000, B00000 };
 
-//----Variables para Fecha-----------
-int secondsSet = 0;
-int minutesSet = 0;
-int hoursSet = 0;
-int monthSet = 0;
-int dayMonthSet = 0;
-int dayWeekSet = 0;
-int yearSet = 0;
-//-----------------------------------
-
 void setup() {
-myRTC.updateTime();
+
    //myRTC.setDS1302Time(00, 11, 11, 1, 28, 3, 2022); // SS, MM, HH, DW, DD, MM, YYYY
-  
+  myRTC.updateTime();
+
+
   Serial.begin(9600);
   pinMode(outputA, INPUT);
   pinMode(outputB, INPUT);
@@ -165,10 +159,6 @@ void loop() {
   hoursSet = myRTC.hours;
   dayWeekSet = myRTC.dayofweek;
   yearSet = myRTC.year;
-
-
-
-
 
   //menu 1
  if (level_menu == 0) {
@@ -548,13 +538,28 @@ void fn_credits() {
 }
 
 void rutinaUno(){
-/*
-apertura por tiempo
-*/
+         
+  int timeDiff, lastRead = 0;                                                                            
+  myRTC.updateTime();                                                                                    
+  delay(1500);                                                                                           
+  timeDiff = myRTC.hours - lastRead;                                                                  
+  if ( timeDiff < 2 )   {                                                                             
+    Serial.print(timeDiff); 
+    Serial.println("MAL");                                                                       
+    } else  {                                                                                            
+         Serial.print(timeDiff); 
+         Serial.println("bien");                                                                     
+      }                                                                                                  
+  lastRead = myRTC.hours;                                                                            
+                                                                                                
+                                                     
+  delay( 2000 );                                                                                         
+                                                                                                       
+  digitalWrite(LEDPinGood, LOW);                                                                         
+  digitalWrite(LEDPinBad, LOW); 
 
 
 }
-
 
 
 void MotorDosIzquierda() {
@@ -571,13 +576,9 @@ void MotorDosIzquierda() {
   digitalWrite(pinD, HIGH);
 }
 
-
-
 void MotorDosDerecha() {
   digitalWrite(pinD, LOW);
-
   lcd.init();
-
   lcd.setCursor(0, 0);
   lcd.print("Apertura Puerta");
   lcd.setCursor(3, 1);
@@ -589,9 +590,7 @@ void MotorDosDerecha() {
 
 void MotorUnoIzquierda() {
   digitalWrite(pinA, LOW);
-
   lcd.init();
-  //  digitalWrite(pinB, LOW);
   lcd.setCursor(0, 0);
   lcd.print("Cierre Puerta");
   lcd.setCursor(3, 1);
@@ -605,9 +604,7 @@ void MotorUnoIzquierda() {
 
 void MotorUnoDerecha() {
   digitalWrite(pinB, LOW);
-
-  lcd.init();
-
+   lcd.init();
   lcd.setCursor(0, 0);
   lcd.print("Apertura Puerta");
   lcd.setCursor(3, 1);
@@ -620,12 +617,9 @@ void paroMotores() {
   ApagarLed();
   analogWrite(RPWM, 0);
   analogWrite(LPWM, 0);
-  // delay(10000);
-
   analogWrite(LPWM2, 0);
   analogWrite(RPWM2, 0);
-  //delay(10000);
-}
+  }
 
 void ApagarLed() {
   digitalWrite(pinA, LOW);
@@ -658,7 +652,6 @@ void DashBoard() {
   lcd.print(temp_c2);
   lcd.setCursor(14, 0);
   lcd.print("*C");
-
   lcd.setCursor(0, 1);
   lcd.print("HP1:");
   lcd.setCursor(4, 1);
