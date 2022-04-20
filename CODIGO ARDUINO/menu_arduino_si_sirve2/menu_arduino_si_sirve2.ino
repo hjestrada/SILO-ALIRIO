@@ -11,7 +11,7 @@
 #include <LiquidCrystal_I2C.h>
 #include <virtuabotixRTC.h>
 #include <EEPROM.h>
-byte SP_tiempopuerta1, SP_tiempopuerta2, SP_humedad, SP_temp;
+byte SP_tiempopuerta1, SP_tiempopuerta2, SP_humedad, SP_temp, H1;
 LiquidCrystal_I2C lcd(0x27, 16, 2);
 
 // Pines sensores  SHT10
@@ -89,8 +89,6 @@ void setup() {
 
   // myRTC.setDS1302Time(00, 59, 9, 3, 19, 4, 2022); // SS, MM, HH, DW, DD, MM, YYYY
   myRTC.updateTime();
-
-
   Serial.begin(9600);
   pinMode(outputA, INPUT);
   pinMode(outputB, INPUT);
@@ -112,10 +110,8 @@ void setup() {
   pinMode(LPWM2, OUTPUT);
   pinMode(LEN2, OUTPUT);
   pinMode(REN2, OUTPUT);
-
   digitalWrite(REN, HIGH);
   digitalWrite(LEN, HIGH);
-
   digitalWrite(REN2, HIGH);
   digitalWrite(LEN2, HIGH);
 
@@ -127,14 +123,17 @@ void setup() {
 }
 
 void loop() {
-
-
-  selectOption();
-  rutinaUno();
   SP_tiempopuerta1 = EEPROM.read(0);
   SP_tiempopuerta2 = EEPROM.read(1);
   SP_humedad = EEPROM.read(2);
   SP_temp = EEPROM.read(3);
+  H1 = EEPROM.read(4);
+
+
+
+  selectOption();
+
+
 
   Serial.print(SP_tiempopuerta1, DEC);
   Serial.print("|");
@@ -144,7 +143,6 @@ void loop() {
   Serial.print("|");
   Serial.print(SP_temp, DEC);
   Serial.println();
-
 
   //menu 1
   if (level_menu == 0) {
@@ -308,9 +306,6 @@ void loop() {
     }
   }
 
-
-
-
   if (level_menu == 3) {
 
     if (fn_encoder(sizemenu2)) {
@@ -356,7 +351,9 @@ void loop() {
     if (btnpress) {
       counter = 5;
       level_menu = 0;
-      EEPROM.write(0, brilloled3);
+      EEPROM.write(0, brilloled3); //Cada Cuanto
+      EEPROM.write(4, myRTC.hours); // Hora de Activacion
+
       fn_menu(counter, menu1, sizemenu1);
       btnpress = false;
     }
@@ -514,21 +511,61 @@ void fn_credits() {
 }
 
 void rutinaUno() {
-  hoursSet = myRTC.hours;
-  if (hoursSet = hoursSet + SP_tiempopuerta1) {
-    lcd.init();
-    lcd.setCursor(3, 0);
-    lcd.print("alarma");
 
-    Serial.print(hoursSet);
-    Serial.print("-----");
-    Serial.println(SP_tiempopuerta1);
-    
+  //int horaRTC = myRTC.hours;
+  //int auxSP=SP_tiempopuerta1;
+  //int auxH1=H1;
+
+  int horaRTC = 20; //var hora del reloj
+  int auxSP = 5;    // Tiempo de apertura AJUSTADO EN SP
+  int auxH1 = 14;  // Hora guardada al momento de setear el SP
+  int r = 0;
+
+  r = (auxH1 + auxSP);
+
+  if (r > 24) {
+    if (horaRTC == r - 24) {
+
+      MotorUnoDerecha();//ABRE PUERTA 1
+      lcd.setCursor(0, 1);
+      lcd.print("AA");
+      delay(20000);
+      paroMotores();
+
+
+    }
+    else {
+
+      MotorUnoIzquierda();//CIERRA PUERTA 1
+      lcd.setCursor(0, 1);
+      lcd.print("CA");
+      delay(20000);
+      paroMotores();
+     
+    }
   }
   else {
 
-  }
+    if (horaRTC == r) {
 
+      MotorUnoDerecha(); //ABRE PUERTA 1
+      lcd.setCursor(0, 1);
+      lcd.print("AB");
+      delay(20000);
+      paroMotores();
+     
+
+    }
+    else {
+
+      MotorUnoIzquierda(); //CIERRA PUERTA 1
+      lcd.setCursor(0, 1);
+      lcd.print("CB");
+      delay(20000);
+      paroMotores();
+      
+    }
+  }
 }
 
 
@@ -545,6 +582,7 @@ void MotorDosIzquierda() {
   analogWrite(LPWM2, 255);
   analogWrite(RPWM2, 0);
   digitalWrite(pinD, HIGH);
+
 }
 
 void MotorDosDerecha() {
@@ -557,6 +595,7 @@ void MotorDosDerecha() {
   digitalWrite(pinC, HIGH);
   analogWrite(RPWM2, 255);
   analogWrite(LPWM2, 0);
+
 }
 
 void MotorUnoIzquierda() {
@@ -569,6 +608,7 @@ void MotorUnoIzquierda() {
   analogWrite(LPWM, 255);
   analogWrite(RPWM, 0);
   digitalWrite(pinB, HIGH);
+    
 }
 
 void MotorUnoDerecha() {
@@ -581,6 +621,7 @@ void MotorUnoDerecha() {
   digitalWrite(pinA, HIGH);
   analogWrite(RPWM, 255);
   analogWrite(LPWM, 0);
+    
 }
 void paroMotores() {
   ApagarLed();
@@ -631,4 +672,5 @@ void DashBoard() {
   lcd.print(humidity2);
   lcd.setCursor(14, 1);
   lcd.print("HR");
+    rutinaUno();
 }
