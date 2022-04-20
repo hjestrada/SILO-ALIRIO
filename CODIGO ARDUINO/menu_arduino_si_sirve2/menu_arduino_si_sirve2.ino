@@ -31,7 +31,6 @@ SHT1x sht1x2(dataPin2, clockPin2);
 #define REN 34
 #define LEN 32
 
-
 #define RPWM2 41
 #define LPWM2 43
 #define REN2 45
@@ -65,6 +64,7 @@ int counter = -1;
 int aState;
 int aLastState;
 String Scount;
+int auxact = 0;
 
 //::::::::::MENU::::::::::::::::::::::
 String menu1[] = { "Puerta 1", "Puerta 2", "DashBoard", "Tiempo Ap 1", "Tiempo Ap 2", "Setpoint Temp", "Setpoint Hum" };
@@ -86,7 +86,6 @@ byte brilloled3 = 0;
 byte flecha[] = { B00000, B00100, B00110, B11111, B00110, B00100, B00000, B00000 };
 
 void setup() {
-
   // myRTC.setDS1302Time(00, 59, 9, 3, 19, 4, 2022); // SS, MM, HH, DW, DD, MM, YYYY
   myRTC.updateTime();
   Serial.begin(9600);
@@ -100,7 +99,6 @@ void setup() {
   lcd.createChar(0, flecha);
   fn_credits();
   fn_menu(counter, menu1, sizemenu1);
-
   //-Pines motores
   pinMode(RPWM, OUTPUT);
   pinMode(LPWM, OUTPUT);
@@ -114,7 +112,6 @@ void setup() {
   digitalWrite(LEN, HIGH);
   digitalWrite(REN2, HIGH);
   digitalWrite(LEN2, HIGH);
-
   //-pines Led
   pinMode(pinA, OUTPUT);
   pinMode(pinB, OUTPUT);
@@ -123,17 +120,14 @@ void setup() {
 }
 
 void loop() {
+
   SP_tiempopuerta1 = EEPROM.read(0);
   SP_tiempopuerta2 = EEPROM.read(1);
   SP_humedad = EEPROM.read(2);
   SP_temp = EEPROM.read(3);
   H1 = EEPROM.read(4);
-
-
-
+  
   selectOption();
-
-
 
   Serial.print(SP_tiempopuerta1, DEC);
   Serial.print("|");
@@ -349,11 +343,11 @@ void loop() {
     }
 
     if (btnpress) {
+      auxact = 0;
       counter = 5;
       level_menu = 0;
       EEPROM.write(0, brilloled3); //Cada Cuanto
       EEPROM.write(4, myRTC.hours); // Hora de Activacion
-
       fn_menu(counter, menu1, sizemenu1);
       btnpress = false;
     }
@@ -432,7 +426,6 @@ void fn_menu(int pos, String menus[], byte sizemenu) {
   linea2 = "";
 
   if ((pos % 2) == 0) {
-
     lcd.setCursor(0, 0);
     lcd.write(byte(0));
     linea1 = menus[pos];
@@ -450,7 +443,6 @@ void fn_menu(int pos, String menus[], byte sizemenu) {
 
   lcd.setCursor(1, 0);
   lcd.print(linea1);
-
   lcd.setCursor(1, 1);
   lcd.print(linea2);
 }
@@ -511,60 +503,49 @@ void fn_credits() {
 }
 
 void rutinaUno() {
-
+  
   //int horaRTC = myRTC.hours;
   //int auxSP=SP_tiempopuerta1;
   //int auxH1=H1;
-
   int horaRTC = 20; //var hora del reloj
   int auxSP = 5;    // Tiempo de apertura AJUSTADO EN SP
   int auxH1 = 14;  // Hora guardada al momento de setear el SP
   int r = 0;
-
-  r = (auxH1 + auxSP);
-
-  if (r > 24) {
-    if (horaRTC == r - 24) {
-
-      MotorUnoDerecha();//ABRE PUERTA 1
-      lcd.setCursor(0, 1);
-      lcd.print("AA");
-      delay(20000);
-      paroMotores();
-
-
+    r = (auxH1 + auxSP);
+  if (auxact == 0) {
+    if (r > 24) {
+      if (horaRTC == r - 24) {
+        MotorUnoDerecha();//ABRE PUERTA 1
+        lcd.setCursor(0, 1);
+        lcd.print("AA");
+        delay(20000);
+        paroMotores();
+      }
+      else {
+        MotorUnoIzquierda();//CIERRA PUERTA 1
+        lcd.setCursor(0, 1);
+        lcd.print("CA");
+        delay(20000);
+        paroMotores();
+      }
     }
     else {
-
-      MotorUnoIzquierda();//CIERRA PUERTA 1
-      lcd.setCursor(0, 1);
-      lcd.print("CA");
-      delay(20000);
-      paroMotores();
-     
+      if (horaRTC == r) {
+        MotorUnoDerecha(); //ABRE PUERTA 1
+        lcd.setCursor(0, 1);
+        lcd.print("AB");
+        delay(20000);
+        paroMotores();
+      }
+      else {
+        MotorUnoIzquierda(); //CIERRA PUERTA 1
+        lcd.setCursor(0, 1);
+        lcd.print("CB");
+        delay(20000);
+        paroMotores();
+      }
     }
-  }
-  else {
-
-    if (horaRTC == r) {
-
-      MotorUnoDerecha(); //ABRE PUERTA 1
-      lcd.setCursor(0, 1);
-      lcd.print("AB");
-      delay(20000);
-      paroMotores();
-     
-
-    }
-    else {
-
-      MotorUnoIzquierda(); //CIERRA PUERTA 1
-      lcd.setCursor(0, 1);
-      lcd.print("CB");
-      delay(20000);
-      paroMotores();
-      
-    }
+    auxact = auxact + 1;
   }
 }
 
@@ -608,7 +589,7 @@ void MotorUnoIzquierda() {
   analogWrite(LPWM, 255);
   analogWrite(RPWM, 0);
   digitalWrite(pinB, HIGH);
-    
+
 }
 
 void MotorUnoDerecha() {
@@ -621,7 +602,7 @@ void MotorUnoDerecha() {
   digitalWrite(pinA, HIGH);
   analogWrite(RPWM, 255);
   analogWrite(LPWM, 0);
-    
+
 }
 void paroMotores() {
   ApagarLed();
@@ -672,5 +653,5 @@ void DashBoard() {
   lcd.print(humidity2);
   lcd.setCursor(14, 1);
   lcd.print("HR");
-    rutinaUno();
+  rutinaUno();
 }
