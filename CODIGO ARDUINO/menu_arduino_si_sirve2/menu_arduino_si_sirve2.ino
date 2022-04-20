@@ -1,17 +1,17 @@
 /*
   |:::::::::::::::::::::::::::::::::::::::::::::::::::::::::|
-  |:::::::::::: Dev:  @hjestrada :::::::::::::::::::::::::::|  
+  |:::::::::::: Dev:  @hjestrada :::::::::::::::::::::::::::|
   |::::::::: Tecnoparque nodo Pitalito::::::::::::::::::::::|
   |:::::::::::::::::::::::::::::::::::::::::::::::::::::::::|
-  
+
 */
 
 #include <SHT1x.h>
 #include <Wire.h>
 #include <LiquidCrystal_I2C.h>
-#include <virtuabotixRTC.h>  //Libreria
+#include <virtuabotixRTC.h>
 #include <EEPROM.h>
-
+byte SP_tiempopuerta1, SP_tiempopuerta2, SP_humedad, SP_temp;
 LiquidCrystal_I2C lcd(0x27, 16, 2);
 
 // Pines sensores  SHT10
@@ -39,17 +39,10 @@ SHT1x sht1x2(dataPin2, clockPin2);
 
 //::::::::::::::::::
 
-virtuabotixRTC myRTC(2, 3, 4); // Si cambiamos los PIN de conexión, debemos cambiar aquí tambien
-
+virtuabotixRTC myRTC(2, 3, 4);  // Si cambiamos los PIN de conexión, debemos cambiar aquí tambien
 //----Variables para Fecha-----------
-int secondsSet = 0;
-int minutesSet = 0;
+
 int hoursSet = 0;
-int monthSet = 0;
-int dayMonthSet = 0;
-int dayWeekSet = 0;
-int yearSet = 0;
-//-----------------------------------
 
 //:::::::::::ENCODER::::::::::::::::::::::::::
 
@@ -94,7 +87,7 @@ byte flecha[] = { B00000, B00100, B00110, B11111, B00110, B00100, B00000, B00000
 
 void setup() {
 
-   //myRTC.setDS1302Time(00, 11, 11, 1, 28, 3, 2022); // SS, MM, HH, DW, DD, MM, YYYY
+  // myRTC.setDS1302Time(00, 59, 9, 3, 19, 4, 2022); // SS, MM, HH, DW, DD, MM, YYYY
   myRTC.updateTime();
 
 
@@ -135,11 +128,11 @@ void setup() {
 
 void loop() {
 
-  byte SP_tiempopuerta1, SP_tiempopuerta2, SP_humedad, SP_temp;
-  selectOption();
 
- SP_tiempopuerta1 = EEPROM.read(0);
-  SP_tiempopuerta2= EEPROM.read(1);
+  selectOption();
+  rutinaUno();
+  SP_tiempopuerta1 = EEPROM.read(0);
+  SP_tiempopuerta2 = EEPROM.read(1);
   SP_humedad = EEPROM.read(2);
   SP_temp = EEPROM.read(3);
 
@@ -152,16 +145,9 @@ void loop() {
   Serial.print(SP_temp, DEC);
   Serial.println();
 
-  dayMonthSet = myRTC.dayofmonth;
-  monthSet = myRTC.month;
-  secondsSet = myRTC.seconds;
-  minutesSet = myRTC.minutes;
-  hoursSet = myRTC.hours;
-  dayWeekSet = myRTC.dayofweek;
-  yearSet = myRTC.year;
 
   //menu 1
- if (level_menu == 0) {
+  if (level_menu == 0) {
 
     if (fn_encoder(sizemenu1)) {
       fn_menu(counter, menu1, sizemenu1);
@@ -274,27 +260,20 @@ void loop() {
     if (btnpress) {
 
       if (counter == 0) {
-
         MotorUnoDerecha();
-
         counter == 2;
       }
-
       if (counter == 1) {
-
         MotorUnoIzquierda();
-
         counter == 2;
       }
 
       if (counter == 2) {
         counter = 0;
-
         fn_menu(counter, menu1, sizemenu1);
         paroMotores();
         level_menu = 0;
       }
-
       btnpress = false;
     }
   }
@@ -315,7 +294,6 @@ void loop() {
       }
 
       if (counter == 1) {
-
         MotorDosIzquierda();
       }
 
@@ -326,7 +304,6 @@ void loop() {
         //fn_menu(counter, menu1, sizemenu1);
         level_menu = 0;
       }
-
       btnpress = false;
     }
   }
@@ -357,7 +334,6 @@ void loop() {
         fn_menu(counter, menu1, sizemenu1);
         level_menu = 0;
       }
-
       btnpress = false;
     }
   }
@@ -537,36 +513,31 @@ void fn_credits() {
   lcd.init();
 }
 
-void rutinaUno(){
-         
-  int timeDiff, lastRead = 0;                                                                            
-  myRTC.updateTime();                                                                                    
-  delay(1500);                                                                                           
-  timeDiff = myRTC.hours - lastRead;                                                                  
-  if ( timeDiff < 2 )   {                                                                             
-    Serial.print(timeDiff); 
-    Serial.println("MAL");                                                                       
-    } else  {                                                                                            
-         Serial.print(timeDiff); 
-         Serial.println("bien");                                                                     
-      }                                                                                                  
-  lastRead = myRTC.hours;                                                                            
-                                                                                                
-                                                     
-  delay( 2000 );                                                                                         
-                                                                                                       
-  digitalWrite(LEDPinGood, LOW);                                                                         
-  digitalWrite(LEDPinBad, LOW); 
+void rutinaUno() {
+  hoursSet = myRTC.hours;
+  if (hoursSet = hoursSet + SP_tiempopuerta1) {
+    lcd.init();
+    lcd.setCursor(3, 0);
+    lcd.print("alarma");
 
+    Serial.print(hoursSet);
+    Serial.print("-----");
+    Serial.println(SP_tiempopuerta1);
+    
+  }
+  else {
+
+  }
 
 }
+
 
 
 void MotorDosIzquierda() {
   digitalWrite(pinC, LOW);
 
   lcd.init();
-  //  digitalWrite(pinB, LOW);
+
   lcd.setCursor(0, 0);
   lcd.print("Cierre Puerta");
   lcd.setCursor(3, 1);
@@ -600,11 +571,9 @@ void MotorUnoIzquierda() {
   digitalWrite(pinB, HIGH);
 }
 
-
-
 void MotorUnoDerecha() {
   digitalWrite(pinB, LOW);
-   lcd.init();
+  lcd.init();
   lcd.setCursor(0, 0);
   lcd.print("Apertura Puerta");
   lcd.setCursor(3, 1);
@@ -619,7 +588,7 @@ void paroMotores() {
   analogWrite(LPWM, 0);
   analogWrite(LPWM2, 0);
   analogWrite(RPWM2, 0);
-  }
+}
 
 void ApagarLed() {
   digitalWrite(pinA, LOW);
