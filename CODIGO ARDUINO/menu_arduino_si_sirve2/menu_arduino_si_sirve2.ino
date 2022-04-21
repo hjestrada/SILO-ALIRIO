@@ -36,6 +36,27 @@ SHT1x sht1x2(dataPin2, clockPin2);
 #define REN2 45
 #define LEN2 47
 
+//::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+/* declaración de variables */
+int spk = 13;                                         // altavoz a GND y pin 13
+
+int c[5] = {131, 262, 523, 1046, 2093}; // frecuencias 4 octavas de Do
+int cs[5] = {139, 277, 554, 1108, 2217}; // Do#
+int d[5] = {147, 294, 587, 1175, 2349}; // Re
+int ds[5] = {156, 311, 622, 1244, 2489}; // Re#
+int e[5] = {165, 330, 659, 1319, 2637}; // Mi
+int f[5] = {175, 349, 698, 1397, 2794}; // Fa
+int fs[5] = {185, 370, 740, 1480, 2960}; // Fa#
+int g[5] = {196, 392, 784, 1568, 3136}; // Sol
+int gs[5] = {208, 415, 831, 1661, 3322}; // Sol#
+int a[5] = {220, 440, 880, 1760, 3520}; // La
+int as[5] = {233, 466, 932, 1866, 3729}; // La#
+int b[5] = {247, 494, 988, 1976, 3951}; // Si
+void nota(int a, int b);            // declaración de la función auxiliar. Recibe dos números enteros.
+
+
+
 //::::::::::::::::::
 
 virtuabotixRTC myRTC(2, 3, 4);  // Si cambiamos los PIN de conexión, debemos cambiar aquí tambien
@@ -86,6 +107,8 @@ byte brilloled3 = 0;
 byte flecha[] = { B00000, B00100, B00110, B11111, B00110, B00100, B00000, B00000 };
 
 void setup() {
+
+
   // myRTC.setDS1302Time(00, 59, 9, 3, 19, 4, 2022); // SS, MM, HH, DW, DD, MM, YYYY
   myRTC.updateTime();
   Serial.begin(9600);
@@ -418,6 +441,48 @@ void loop() {
   }
 }
 
+void nota(int frec, int t)
+{
+  tone(spk, frec);     // suena la nota frec recibida
+  delay(t);                // para despues de un tiempo t
+}
+
+int melodia() {
+  nota(g[2], 500); noTone(spk); delay(100);
+  nota(g[2], 500); noTone(spk); delay(100);
+  nota(g[2], 500); noTone(spk); delay(100);
+  nota(ds[2], 500); noTone(spk); delay(1);
+  nota(as[2], 125); noTone(spk); delay(25);
+  nota(g[2], 500); noTone(spk); delay(100);
+  nota(ds[2], 500); noTone(spk); delay(1);
+  nota(as[2], 125); noTone(spk); delay(25);
+  nota(g[2], 500);
+  noTone(spk); delay(2000);
+}
+
+
+void alarmapuerta(){
+  for (int  x= 1000; x < 5000; x++) {
+tone(spk, x,2000); 
+
+  }
+  noTone(spk);
+
+  
+  }
+
+  void alarmapuerta2(){
+     for (int  x= 5000; x < 10000; x++) {
+tone(spk, x,2000); 
+
+  }
+  noTone(spk); 
+  
+  }
+
+
+
+
 //-----------------------------------------------------------------
 
 void fn_menu(int pos, String menus[], byte sizemenu) {
@@ -502,17 +567,27 @@ void fn_credits() {
   lcd.init();
 }
 
+void alarmasonora1(){
+
+}
+
+//::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
 void rutinaUno() {
   
-  //int horaRTC = myRTC.hours;
-  //int auxSP=SP_tiempopuerta1;
-  //int auxH1=H1;
-  int horaRTC = 20; //var hora del reloj
-  int auxSP = 5;    // Tiempo de apertura AJUSTADO EN SP
-  int auxH1 = 14;  // Hora guardada al momento de setear el SP
-  int r = 0;
+  int horaRTC = myRTC.hours;
+  int auxSP=SP_tiempopuerta1;
+  int auxH1=H1;
+
+  //int horaRTC = 20; //var hora del reloj
+  //int auxSP = 5;    // Tiempo de apertura AJUSTADO EN SP
+ // int auxH1 = 14;  // Hora guardada al momento de setear el SP
+    int r = 0;
+
     r = (auxH1 + auxSP);
+
   if (auxact == 0) {
+
     if (r > 24) {
       if (horaRTC == r - 24) {
         MotorUnoDerecha();//ABRE PUERTA 1
@@ -549,13 +624,11 @@ void rutinaUno() {
   }
 }
 
-
+//::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 void MotorDosIzquierda() {
   digitalWrite(pinC, LOW);
-
   lcd.init();
-
   lcd.setCursor(0, 0);
   lcd.print("Cierre Puerta");
   lcd.setCursor(3, 1);
@@ -620,12 +693,10 @@ void ApagarLed() {
 }
 
 void DashBoard() {
-
   int temp_c;
   int humidity;
   int temp_c2;
   int humidity2;
-
   temp_c = sht1x.readTemperatureC();
   humidity = sht1x.readHumidity();
   temp_c2 = sht1x2.readTemperatureC();
@@ -653,5 +724,21 @@ void DashBoard() {
   lcd.print(humidity2);
   lcd.setCursor(14, 1);
   lcd.print("HR");
-  rutinaUno();
+
+    if (temp_c >=SP_temp ){
+     alarmapuerta();     
+     
+  }else{
+    noTone(spk);
+  }
+  
+  
+   if (temp_c2 >=SP_temp  ){
+      alarmapuerta2();
+                  
+  }else{
+noTone(spk);
+  }
+    rutinaUno();
+
 }

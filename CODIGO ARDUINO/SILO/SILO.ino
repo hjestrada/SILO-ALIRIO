@@ -85,6 +85,7 @@ SHT1x sht1x2(dataPin2, clockPin2);
 
 /* declaración de variables */
 int spk = 13;                                         // altavoz a GND y pin 13
+
 int c[5] = {131, 262, 523, 1046, 2093}; // frecuencias 4 octavas de Do
 int cs[5] = {139, 277, 554, 1108, 2217}; // Do#
 int d[5] = {147, 294, 587, 1175, 2349}; // Re
